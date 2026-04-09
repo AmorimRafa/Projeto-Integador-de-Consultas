@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "produto.h"
 
 //Abertura de arquivo
@@ -51,7 +52,35 @@ Produto* ler_arquivo_csv(const char* nome_arquivo, int* total_lido){
   // Leitura dos dados
   // ====================================
 
-  fgets(linha_temp, sizeof(linha_temp), arquivo);
+  fgets(linha_temp, sizeof(linha_temp), arquivo); //roda 1 vez para pular o cabecalho
+
+  int indice = 0;
+  while(fgets(linha_temp, sizeof(linha_temp), arquivo) != NULL){
+    linha_temp[strcspn(linha_temp, "\n")] = '\0';
+
+    char* bloco = strtok(linha_temp, ",");
+    if(bloco != NULL){
+      vetor_dinamico[indice].id = atoi(bloco);
+    }
+
+    bloco = strtok(NULL, ",");
+    if(bloco != NULL){
+      strcpy(vetor_dinamico[indice].nome, bloco); 
+    }
+
+    bloco = strtok(NULL, ",");
+    if(bloco != NULL){
+      strcpy(vetor_dinamico[indice].categoria, bloco);
+    }
+
+    bloco = strtok(NULL, ",");
+    if(bloco != NULL){
+      vetor_dinamico[indice].valor =  atof(bloco);
+    }
+
+    indice++;
+  }
+  
   *total_lido = total_linhas;
   fclose(arquivo);
 
