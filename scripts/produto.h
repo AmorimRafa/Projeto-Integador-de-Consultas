@@ -10,5 +10,6 @@ typedef struct {
 } Produto;
 
 Produto* ler_arquivo_csv(const char* nome_arquivo, int* total_lido);
+void liberar_memoria(Produto* vetor_dinamico);
 
 #endif

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "produto.h"
 
+//Abertura de arquivo
 Produto* ler_arquivo_csv(const char* nome_arquivo, int* total_lido){
   FILE *arquivo = fopen(nome_arquivo, "r");
 
@@ -14,20 +15,54 @@ Produto* ler_arquivo_csv(const char* nome_arquivo, int* total_lido){
     printf("SUCESSO: Arquivo '%s' aberto corretamente! \n", nome_arquivo);
   }
 
-  int contador_linhas =-1;
-  char linha_temp[1024];
+  // leitura do arquivo
+  int total_linhas = -1; //ignora cabecalho
+  char linha_temp[1024]; //tamanho da linha
 
+  // fgets(local de armazenamento, tamanho da linha, arquivo)
   while (fgets(linha_temp, sizeof(linha_temp), arquivo) != NULL) {
-    contador_linhas++;
+    total_linhas++;
   }
 
-  printf("verificacao: O arquivo tem %d linhas.\n", contador_linhas);
+  if(total_linhas < 0){
+    printf("AVISO: Seu arquivo esta vazio! \n");
+    return NULL;
+  }else if (total_linhas == 0){
+    printf("AVISO: Seu arquivo so contem o cabecalho! \n");
+    return NULL;
+  }else{
+    printf("verificacao: O arquivo tem %d linhas.\n", total_linhas);
+  }
+  *total_lido = total_linhas;
+  
 
-  rewind(arquivo);
+  Produto* vetor_dinamico = (Produto*) malloc(total_linhas * sizeof(Produto));
+  if(vetor_dinamico == NULL){
+    printf("ERRO FATAL: Sem memoria suficiente! \n");
+    *total_lido = 0;
+    fclose(arquivo);
+    return NULL;
+  }else{
+    printf("SUCESSO: Vetor Alocado! \n");
+  }
+  rewind(arquivo); // volta o cursor para o inicio do arquivo
 
-  *total_lido = contador_linhas;
+  // ====================================
+  // Leitura dos dados
+  // ====================================
 
+  fgets(linha_temp, sizeof(linha_temp), arquivo);
+  *total_lido = total_linhas;
   fclose(arquivo);
-  return NULL;
+
+  return vetor_dinamico;
+
+}
+
+void liberar_memoria(Produto* vetor_dinamico){
+  if(vetor_dinamico != NULL){
+    free(vetor_dinamico);
+    printf("Memoria Liberada com Sucesso! \n");
+  }
 
 }
