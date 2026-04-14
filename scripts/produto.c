@@ -93,5 +93,30 @@ void liberar_memoria(Produto* vetor_dinamico){
     free(vetor_dinamico);
     printf("Memoria Liberada com Sucesso! \n");
   }
-
 }
+
+  int buscar_por_id(Produto* vetor_dinamico, int total_produtos, int id_buscado){
+
+    for(int i=0; i<total_produtos;i++){
+      if(vetor_dinamico[i].id== id_buscado){
+        return i; //sucesso na busca
+      }
+    }
+    return -1; // nao existe esse indice (indicando falha na busca)
+  };
+
+  int buscar_categoria(Produto* vetor_dinamico, int total_produtos, const char* categoria){
+    int categorizados = 0;
+
+    for(int i=0; i < total_produtos; i++){
+      if(strcmp(vetor_dinamico[i].categoria, categoria) == 0){
+        printf("ID: %i | PRODUTO: %s | CATEGORIA: %s | VALOR: %.2f \n", vetor_dinamico[i].id, vetor_dinamico[i].nome, vetor_dinamico[i].categoria, vetor_dinamico[i].valor);
+      }
+      categorizados++;
+    }
+    //printf("categorizados %s \n", categorizados);  
+    if(categorizados == 0){
+    printf("ERRO: Produto nao encontrado! \n");  
+    }
+    return categorizados;
+  }

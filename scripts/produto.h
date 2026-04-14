@@ -11,5 +11,7 @@ typedef struct {
 
 Produto* ler_arquivo_csv(const char* nome_arquivo, int* total_lido);
 void liberar_memoria(Produto* vetor_dinamico);
+int buscar_por_id(Produto* vetor_dinamico, int total_produtos, int id_buscado);
+int buscar_categoria(Produto* vetor_dinamico, int total_produtos, const char* categoria);
 
 #endif
