@@ -106,17 +106,62 @@ void liberar_memoria(Produto* vetor_dinamico){
   };
 
   int buscar_categoria(Produto* vetor_dinamico, int total_produtos, const char* categoria){
-    int categorizados = 0;
+    int categorizados = 0; //numero de registros encontrados
 
     for(int i=0; i < total_produtos; i++){
       if(strcmp(vetor_dinamico[i].categoria, categoria) == 0){
-        printf("ID: %i | PRODUTO: %s | CATEGORIA: %s | VALOR: %.2f \n", vetor_dinamico[i].id, vetor_dinamico[i].nome, vetor_dinamico[i].categoria, vetor_dinamico[i].valor);
+        printf("ID: %i | PRODUTO: %s | CATEGORIA: %s | VALOR: %.2f \n", 
+          vetor_dinamico[i].id, vetor_dinamico[i].nome, vetor_dinamico[i].categoria, vetor_dinamico[i].valor);
+          categorizados++; // adiciona registros encontrados
       }
-      categorizados++;
+      
     }
     //printf("categorizados %s \n", categorizados);  
     if(categorizados == 0){
     printf("ERRO: Produto nao encontrado! \n");  
     }
     return categorizados;
+  }
+
+  void gravar_logs(const char* posicao, int repeticao, int total_lido){
+    FILE *arquivo_log = fopen("../logs/logs.csv", "a");
+    if(arquivo_log == NULL){
+      printf("ERRO: Nao foi possivel abrir o arquivo! \n");
+      return;
+    }
+
+    fprintf(arquivo_log, "%s,%d,%d\n", posicao, repeticao, total_lido);
+    fclose(arquivo_log);
+  }
+
+  void exec_teste(Produto* vetor_dinamico, int total_lido){
+    int id_inicio = vetor_dinamico[total_lido].id;
+    int id_meio = vetor_dinamico[total_lido / 2].id;
+    int id_fim = vetor_dinamico[total_lido - 1].id;
+    int id_inexistente = -99999;
+
+    for(int repeticao = 1; repeticao <= 3; repeticao++){
+      printf("Executando repeticao %d de 3 \n", repeticao);
+
+      for(int i = 0; i < 1000; i++){
+      buscar_por_id(vetor_dinamico, total_lido, id_inicio);
+      gravar_logs("Busca no Inicio", repeticao, 1000);
+      }
+
+      for(int i = 0; i < 1000; i++){
+      buscar_por_id(vetor_dinamico, total_lido, id_meio);
+      gravar_logs("Busca no Meio", repeticao, 1000);
+      }
+
+      for(int i = 0; i < 1000; i++){
+      buscar_por_id(vetor_dinamico, total_lido, id_fim);
+      gravar_logs("Busca no Fim", repeticao, 1000);
+      }
+
+      for(int i = 0; i < 1000; i++){
+      buscar_por_id(vetor_dinamico, total_lido, id_inexistente);
+      gravar_logs("Busca Inexistente", repeticao, 1000);
+      }
+      
+    }
   }

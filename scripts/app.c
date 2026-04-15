@@ -40,14 +40,18 @@ int main(){
       lista[consulta].id,lista[consulta].nome, lista[consulta].categoria, lista[consulta].valor);      
   }else{printf("ERRO: Produto nao encontrado! \n");}
 
-  char categoria[31];
+  /*char categoria[31];
   printf("Selcione a categoria a ser buscada: \n");
   scanf("%s", categoria);
-  int consulta_cat = buscar_categoria(lista, total_lido, categoria);
+  int consulta_cat = buscar_categoria(lista, total_lido, categoria); */
 
+  exec_teste(lista, total_lido);
 
   liberar_memoria(lista);
   
+
+  
+  //Calculo de Tempo
   clock_t tempo_final = clock(); //Fim do Clock
   double duracao_geral = (double) (tempo_final - tempo_inicial) / CLOCKS_PER_SEC;
   double duracao_leitura = (double) (final_leitura - inicio_leitura) / CLOCKS_PER_SEC;
