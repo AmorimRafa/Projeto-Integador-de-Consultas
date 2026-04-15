@@ -50,9 +50,9 @@ int main(){
   liberar_memoria(lista);
   
 
-  
-  //Calculo de Tempo
   clock_t tempo_final = clock(); //Fim do Clock
+
+  //Calculo de Tempo
   double duracao_geral = (double) (tempo_final - tempo_inicial) / CLOCKS_PER_SEC;
   double duracao_leitura = (double) (final_leitura - inicio_leitura) / CLOCKS_PER_SEC;
   double duracao_busca = (double) (final_busca - inicio_busca) / CLOCKS_PER_SEC;

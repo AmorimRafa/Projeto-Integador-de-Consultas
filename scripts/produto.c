@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "produto.h"
 
 //Abertura de arquivo
@@ -140,28 +141,54 @@ void liberar_memoria(Produto* vetor_dinamico){
     int id_fim = vetor_dinamico[total_lido - 1].id;
     int id_inexistente = -99999;
 
+    clock_t inicio_teste_geral = clock();
+
     for(int repeticao = 1; repeticao <= 3; repeticao++){
       printf("Executando repeticao %d de 3 \n", repeticao);
 
+      clock_t inicio_teste_inicio = clock();
       for(int i = 0; i < 1000; i++){
       buscar_por_id(vetor_dinamico, total_lido, id_inicio);
       gravar_logs("Busca no Inicio", repeticao, 1000);
       }
+      clock_t final_teste_inicio = clock();
+      double teste_inicio = (double) (final_teste_inicio - inicio_teste_inicio) / CLOCKS_PER_SEC;
+      printf("O tempo de execucao de busca no inicio na execucao %d foi de: %.5f seg\n", repeticao, teste_inicio);
 
+      clock_t inicio_teste_meio = clock();
       for(int i = 0; i < 1000; i++){
       buscar_por_id(vetor_dinamico, total_lido, id_meio);
       gravar_logs("Busca no Meio", repeticao, 1000);
       }
+      clock_t final_teste_meio = clock();  
+      double teste_meio = (double) (final_teste_meio - inicio_teste_meio) / CLOCKS_PER_SEC;
+      printf("O tempo de execucao de busca no meio na execucao %d foi de: %.5f seg\n", repeticao, teste_meio);
 
+      clock_t inicio_teste_fim = clock();
       for(int i = 0; i < 1000; i++){
       buscar_por_id(vetor_dinamico, total_lido, id_fim);
       gravar_logs("Busca no Fim", repeticao, 1000);
       }
+      clock_t final_teste_fim = clock();
+      double teste_fim = (double) (final_teste_fim - inicio_teste_fim) / CLOCKS_PER_SEC;
+      printf("O tempo de execucao de busca no fim na execucao %d foi de: %.5f seg\n", repeticao, teste_fim);
 
+      clock_t inicio_teste_inexistente = clock();
       for(int i = 0; i < 1000; i++){
       buscar_por_id(vetor_dinamico, total_lido, id_inexistente);
       gravar_logs("Busca Inexistente", repeticao, 1000);
       }
-      
+      clock_t final_teste_inexistente = clock();
+      double teste_inexistente = (double) (final_teste_inexistente - inicio_teste_inexistente) / CLOCKS_PER_SEC;
+      printf("O tempo de execucao de buscas inexistentes na execucao %d foi de: %.5f seg\n", repeticao, teste_inexistente);
+
+      double media_by_repeticao = (double) (teste_inicio + teste_meio + teste_fim + teste_inexistente) / 4;
+      printf("O tempo medio de consultas na repeticao %d foi de %.5f \n", repeticao, media_by_repeticao);
     }
+    clock_t final_teste_geral = clock();
+
+    double teste_geral = (double) (final_teste_geral - inicio_teste_geral) / CLOCKS_PER_SEC;
+
+    printf("O tempo de execucao da rotina de buscas foi de: %.5f seg\n", teste_geral);
+    
   }
