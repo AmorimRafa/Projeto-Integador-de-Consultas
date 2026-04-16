@@ -10,7 +10,7 @@ int main(){
   clock_t tempo_inicial = clock(); //Inicio do Clock
   clock_t inicio_leitura = clock(); //Inicio do Clock
 
-  Produto* lista  = ler_arquivo_csv("../../dataset3.csv", &total_lido);
+  Produto* lista  = ler_arquivo_csv("../dataset3.csv", &total_lido);
   clock_t final_leitura = clock();
 
   if(lista != NULL){

@@ -152,6 +152,7 @@ void liberar_memoria(Produto* vetor_dinamico){
       gravar_logs("Busca no Inicio", repeticao, 1000);
       }
       clock_t final_teste_inicio = clock();
+
       double teste_inicio = (double) (final_teste_inicio - inicio_teste_inicio) / CLOCKS_PER_SEC;
       printf("O tempo de execucao de busca no inicio na execucao %d foi de: %.5f seg\n", repeticao, teste_inicio);
 
@@ -160,7 +161,8 @@ void liberar_memoria(Produto* vetor_dinamico){
       buscar_por_id(vetor_dinamico, total_lido, id_meio);
       gravar_logs("Busca no Meio", repeticao, 1000);
       }
-      clock_t final_teste_meio = clock();  
+      clock_t final_teste_meio = clock(); 
+
       double teste_meio = (double) (final_teste_meio - inicio_teste_meio) / CLOCKS_PER_SEC;
       printf("O tempo de execucao de busca no meio na execucao %d foi de: %.5f seg\n", repeticao, teste_meio);
 
@@ -170,6 +172,7 @@ void liberar_memoria(Produto* vetor_dinamico){
       gravar_logs("Busca no Fim", repeticao, 1000);
       }
       clock_t final_teste_fim = clock();
+
       double teste_fim = (double) (final_teste_fim - inicio_teste_fim) / CLOCKS_PER_SEC;
       printf("O tempo de execucao de busca no fim na execucao %d foi de: %.5f seg\n", repeticao, teste_fim);
 
@@ -179,6 +182,7 @@ void liberar_memoria(Produto* vetor_dinamico){
       gravar_logs("Busca Inexistente", repeticao, 1000);
       }
       clock_t final_teste_inexistente = clock();
+      
       double teste_inexistente = (double) (final_teste_inexistente - inicio_teste_inexistente) / CLOCKS_PER_SEC;
       printf("O tempo de execucao de buscas inexistentes na execucao %d foi de: %.5f seg\n", repeticao, teste_inexistente);
 
