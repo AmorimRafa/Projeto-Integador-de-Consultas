@@ -148,7 +148,18 @@ void liberar_memoria(Produto* vetor_dinamico){
 
       clock_t inicio_teste_inicio = clock();
       for(int i = 0; i < 1000; i++){
-      buscar_por_id(vetor_dinamico, total_lido, id_inicio);
+        clock_t inicio_busca_mil_inicio = clock();
+        buscar_por_id(vetor_dinamico, total_lido, id_inicio);
+        clock_t fim_busca_mil_inicio = clock();
+        double busca_mil_inicio = (double) (fim_busca_mil_inicio - inicio_busca_mil_inicio) / CLOCKS_PER_SEC;
+        //"O tempo de execucao das 1000 buscas por linha na execucao %d foi de: %.5f seg\n", repeticao, busca_mil_inicio);
+        double soma;
+        soma = soma + busca_mil_inicio;
+        double media = soma /1000;
+        if(i == 999){
+            printf("Media Inicio: %.6f \n", media);
+        }
+
       gravar_logs("Busca no Inicio", repeticao, 1000);
       }
       clock_t final_teste_inicio = clock();
@@ -158,7 +169,17 @@ void liberar_memoria(Produto* vetor_dinamico){
 
       clock_t inicio_teste_meio = clock();
       for(int i = 0; i < 1000; i++){
+        clock_t inicio_busca_mil_meio = clock();
       buscar_por_id(vetor_dinamico, total_lido, id_meio);
+      clock_t fim_busca_mil_meio = clock();
+      double busca_mil_meio = (double) (fim_busca_mil_meio - inicio_busca_mil_meio) / CLOCKS_PER_SEC;
+        //"O tempo de execucao das 1000 buscas por linha na execucao %d foi de: %.5f seg\n", repeticao, busca_mil_meio);
+        double soma;
+        soma = soma + busca_mil_meio;
+        double media = soma /1000;
+        if(i == 999){
+            printf("Media Meio: %.6f \n", media);
+        }
       gravar_logs("Busca no Meio", repeticao, 1000);
       }
       clock_t final_teste_meio = clock(); 
@@ -168,7 +189,17 @@ void liberar_memoria(Produto* vetor_dinamico){
 
       clock_t inicio_teste_fim = clock();
       for(int i = 0; i < 1000; i++){
+        clock_t inicio_busca_mil_fim = clock();
       buscar_por_id(vetor_dinamico, total_lido, id_fim);
+      clock_t fim_busca_mil_fim = clock();
+      double busca_mil_fim = (double) (fim_busca_mil_fim - inicio_busca_mil_fim) / CLOCKS_PER_SEC;
+        //"O tempo de execucao das 1000 buscas por linha na execucao %d foi de: %.5f seg\n", repeticao, busca_mil_meio);
+        double soma;
+        soma = soma + busca_mil_fim;
+        double media = soma /1000;
+        if(i == 999){
+            printf("Media Fim: %.6f \n", media);
+        }
       gravar_logs("Busca no Fim", repeticao, 1000);
       }
       clock_t final_teste_fim = clock();
@@ -194,5 +225,6 @@ void liberar_memoria(Produto* vetor_dinamico){
     double teste_geral = (double) (final_teste_geral - inicio_teste_geral) / CLOCKS_PER_SEC;
 
     printf("O tempo de execucao da rotina de buscas foi de: %.5f seg\n", teste_geral);
+    
     
   }
