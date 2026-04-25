@@ -1,7 +1,7 @@
 services:
   app:
     image: gcc:15
-    container_name: ed
+    container_name: compiler
     working_dir: /app
     volumes:
       - ./:/app
