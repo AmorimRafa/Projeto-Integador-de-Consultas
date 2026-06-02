@@ -22,8 +22,7 @@ Produto* ler_arquivo_csv(const char* nome_arquivo, int* total_lido){
     char linha_temp[1024]; 
 
     while (fgets(linha_temp, sizeof(linha_temp), arquivo) != NULL) {
-        // [ISSUE 1] Pula linhas vazias ou corrompidas (evita "sujeira" na memoria)
-        if (strlen(linha_temp) < 2) continue;
+        if (strlen(linha_temp) < 2) continue; // Pula linhas vazias
         total_linhas++;
     }
 
@@ -46,8 +45,7 @@ Produto* ler_arquivo_csv(const char* nome_arquivo, int* total_lido){
 
     int indice = 0;
     while(fgets(linha_temp, sizeof(linha_temp), arquivo) != NULL){
-        // [ISSUE 1] Protecao contra linhas em branco/malformadas
-        if (strlen(linha_temp) < 2) continue;
+        if (strlen(linha_temp) < 2) continue; // Protecao
         
         linha_temp[strcspn(linha_temp, "\n")] = '\0';
 
@@ -66,10 +64,9 @@ Produto* ler_arquivo_csv(const char* nome_arquivo, int* total_lido){
         indice++;
     }
     
-    *total_lido = indice; // Garante que contabilizou apenas os validos
+    *total_lido = indice; 
     fclose(arquivo);
 
-    // [ISSUE 1] Auditoria de carga exigida pelo professor
     printf("| AUDITORIA: Exatos %d registros validados e carregados na memoria RAM. |\n", *total_lido);
 
     return vetor_dinamico;
@@ -110,111 +107,83 @@ int buscar_categoria(Produto* vetor_dinamico, int total_produtos, const char* ca
 }
 
 // ====================================
-// Registro de Logs (Versao Antiga Temporaria)
+// Registro de Logs [ISSUE 2]
 // ====================================
-void gravar_logs(Produto* p, const char* posicao, int repeticao, int x){
+void gravar_logs(const char* cenario, int repeticao, int buscas, double tempo_gasto){
     FILE *arquivo_log = fopen("../logs/logs.csv", "a");
     if(arquivo_log == NULL){
-        printf("ERRO: Nao foi possivel abrir o arquivo! \n");
+        printf("ERRO: Nao foi possivel abrir o arquivo de logs! \n");
         return;
     }
-    fprintf(arquivo_log, "%d, %s, %s, %.2f, %s, Ciclo %d\n", p[x].id, p[x].nome, p[x].categoria, p[x].valor, posicao, repeticao);
+    fprintf(arquivo_log, "Ciclo %d,%s,%d buscas,%.6f seg\n", repeticao, cenario, buscas, tempo_gasto);
     fclose(arquivo_log);
 }
 
 // ====================================
-// Teste de Buscas (Versao Antiga Temporaria)
+// Teste de Buscas [ISSUE 2]
 // ====================================
 void exec_teste(Produto* vetor_dinamico, int total_lido){
-    int id_inicio = vetor_dinamico[total_lido].id;
+    // [ISSUE 2] CORREÇÃO DO BUG CRÍTICO DO VETOR
+    int id_inicio = vetor_dinamico[0].id; // O ID real da primeira posição!
     int id_meio = vetor_dinamico[total_lido / 2].id;
     int id_fim = vetor_dinamico[total_lido - 1].id;
     int id_inexistente = -99999;
 
-    clock_t inicio_teste_geral = clock();
+    printf("\n|--- INICIANDO PROTOCOLO EXPERIMENTAL ---|\n");
 
     for(int repeticao = 1; repeticao <= 3; repeticao++){
-        printf("| Executando Ciclo de Busca numero %d/3 \n", repeticao);
+        printf("\n| Executando Ciclo numero %d/3... \n", repeticao);
 
-        clock_t inicio_teste_inicio = clock();
+        // --- TESTE INICIO ---
+        clock_t inicio_t = clock(); 
         for(int i = 0; i < 1000; i++){
-            clock_t inicio_busca_mil_inicio = clock();
             buscar_por_id(vetor_dinamico, total_lido, id_inicio);
-            clock_t fim_busca_mil_inicio = clock();
-            double busca_mil_inicio = (double) (fim_busca_mil_inicio - inicio_busca_mil_inicio) / CLOCKS_PER_SEC;
-            double soma = 0;
-            soma = soma + busca_mil_inicio; 
-            double media = soma /1000;
-            if(i == 999){
-                printf("| Media de tempo das buscas no Inicio: %.6f seg \n", media);
-            }
-            gravar_logs(vetor_dinamico, "Busca Inicio", repeticao, i);
         }
-        clock_t final_teste_inicio = clock();
-        double teste_inicio = (double) (final_teste_inicio - inicio_teste_inicio) / CLOCKS_PER_SEC;
+        clock_t fim_t = clock(); 
         
-        clock_t inicio_teste_meio = clock();
+        double teste_inicio = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
+        gravar_logs("Busca Inicio", repeticao, 1000, teste_inicio);
+
+        // --- TESTE MEIO ---
+        inicio_t = clock();
         for(int i = 0; i < 1000; i++){
-            clock_t inicio_busca_mil_meio = clock();
             buscar_por_id(vetor_dinamico, total_lido, id_meio);
-            clock_t fim_busca_mil_meio = clock();
-            double busca_mil_meio = (double) (fim_busca_mil_meio - inicio_busca_mil_meio) / CLOCKS_PER_SEC;
-            double soma = 0;
-            soma = soma + busca_mil_meio; 
-            double media = soma /1000;
-            if(i == 999){
-                printf("| Media de tempo das buscas no Meio: %.6f seg \n", media);
-            }
-            gravar_logs(vetor_dinamico, "Busca Meio", repeticao, i);
         }
-        clock_t final_teste_meio = clock(); 
-        double teste_meio = (double) (final_teste_meio - inicio_teste_meio) / CLOCKS_PER_SEC;
+        fim_t = clock();
         
-        clock_t inicio_teste_fim = clock();
+        double teste_meio = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
+        gravar_logs("Busca Meio", repeticao, 1000, teste_meio);
+
+        // --- TESTE FIM ---
+        inicio_t = clock();
         for(int i = 0; i < 1000; i++){
-            clock_t inicio_busca_mil_fim = clock();
             buscar_por_id(vetor_dinamico, total_lido, id_fim);
-            clock_t fim_busca_mil_fim = clock();
-            double busca_mil_fim = (double) (fim_busca_mil_fim - inicio_busca_mil_fim) / CLOCKS_PER_SEC;
-            double soma = 0;
-            soma = soma + busca_mil_fim;
-            double media = soma /1000;
-            if(i == 999){
-                printf("| Media de tempo das buscas no Fim: %.6f seg \n", media);
-            }
-            gravar_logs(vetor_dinamico, "Busca Fim", repeticao, i);
         }
-        clock_t final_teste_fim = clock();
-        double teste_fim = (double) (final_teste_fim - inicio_teste_fim) / CLOCKS_PER_SEC;
+        fim_t = clock();
         
-        clock_t inicio_teste_inexistente = clock();
+        double teste_fim = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
+        gravar_logs("Busca Fim", repeticao, 1000, teste_fim);
+
+        // --- TESTE INEXISTENTE ---
+        inicio_t = clock();
         for(int i = 0; i < 1000; i++){
-            clock_t inicio_busca_mil_inexistente = clock();  
             buscar_por_id(vetor_dinamico, total_lido, id_inexistente);
-            clock_t fim_busca_mil_inexistente = clock();
-            double busca_mil_inexistente = (double) (fim_busca_mil_inexistente - inicio_busca_mil_inexistente) / CLOCKS_PER_SEC;
-            double soma = 0;
-            soma = soma + busca_mil_inexistente;
-            double media = soma /1000;
-            if(i == 999){
-                printf("| Media de tempo das buscas Inexistentes: %.6f seg \n", media);
-            }
-            gravar_logs(vetor_dinamico, "Busca Inexistente", repeticao, i);
         }
-        clock_t final_teste_inexistente = clock();
-        double teste_inexistente = (double) (final_teste_inexistente - inicio_teste_inexistente) / CLOCKS_PER_SEC;
+        fim_t = clock();
         
-        double media_by_repeticao = (double) (teste_inicio + teste_meio + teste_fim + teste_inexistente) / 4;
-        printf("\n|-----------------------------------------------------------------------------------------|\n");
-        printf("|----Busca Inicio-----| O programa levou %.5f seg para realizar 1000 buscas no ciclo %d |\n", teste_inicio, repeticao);
-        printf("|-----Busca Meio------| O programa levou %.5f seg para realizar 1000 buscas no ciclo %d |\n", teste_meio, repeticao);
-        printf("|-----Busca Fim-------| O programa levou %.5f seg para realizar 1000 buscas no ciclo %d |\n", teste_fim, repeticao);
-        printf("|--Busca Inexistente--| O programa levou %.5f seg para realizar 1000 buscas no ciclo %d |\n", teste_inexistente, repeticao);
+        double teste_inexistente = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
+        gravar_logs("Busca Inexistente", repeticao, 1000, teste_inexistente);
+
+        // --- EXIBICAO DE RESULTADOS ---
+        double media_ciclo = (teste_inicio + teste_meio + teste_fim + teste_inexistente) / 4;
+        
         printf("|-----------------------------------------------------------------------------------------|\n");
-        printf("|---Media por Ciclo---|       O tempo medio de consultas no ciclo %d foi de %.5f        |\n", repeticao, media_by_repeticao);
+        printf("|----Busca Inicio-----| O programa levou %.6f seg para realizar 1000 buscas |\n", teste_inicio);
+        printf("|-----Busca Meio------| O programa levou %.6f seg para realizar 1000 buscas |\n", teste_meio);
+        printf("|-----Busca Fim-------| O programa levou %.6f seg para realizar 1000 buscas |\n", teste_fim);
+        printf("|--Busca Inexistente--| O programa levou %.6f seg para realizar 1000 buscas |\n", teste_inexistente);
+        printf("|-----------------------------------------------------------------------------------------|\n");
+        printf("|---Media do Ciclo----|       O tempo medio do ciclo %d foi de %.6f seg         |\n", repeticao, media_ciclo);
         printf("|-----------------------------------------------------------------------------------------|\n");
     }
-    clock_t final_teste_geral = clock();
-    double teste_geral = (double) (final_teste_geral - inicio_teste_geral) / CLOCKS_PER_SEC;
-    printf("O tempo de execucao da rotina de buscas foi de: %.5f seg\n", teste_geral);
 }
