@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include "produto.h"
+#include "hash.h"
 
 int main(){
     int total_lido = 0;
@@ -13,22 +14,37 @@ int main(){
 
     clock_t tempo_inicial = clock(); // Inicio do Clock Geral
 
-    // ==========================================
-    // FASE 1: LEITURA DO DATASET
-    // ==========================================
+    // ==============================================
+    // FASE 1: LEITURA DO DATASET E CRIAÇÃO DO HASH
+    // ==============================================
     printf("\n|---------------------------------------FASE DE CARREGAMENTO-----------------------------------|\n");
-    clock_t inicio_leitura = clock(); 
-    Produto* lista  = ler_arquivo_csv("../dataset3.csv", &total_lido);
-    clock_t final_leitura = clock();
 
-    // [ISSUE 3] TRAVA DE SEGURANÇA: Se falhar a leitura, aborta para não travar o SO
+    clock_t inicio_leitura = clock();
+
+    Produto* lista = ler_arquivo_csv("../dataset3.csv", &total_lido);
+
+    // [ISSUE 3 FASE 1] TRAVA DE SEGURANÇA: Se falhar a leitura, aborta para não travar o SO
     if(lista == NULL){
         printf("| ERRO CRITICO: Falha ao carregar Produtos! Encerrando sistema...\n");
         printf("|----------------------------------------------------------------------------------------------|\n");
-        return 1; 
-    } else { 
-        printf("| SUCESSO: O Dataset foi carregado na memoria RAM com exito!\n");
+        return 1;
     }
+
+    printf("| SUCESSO: O Dataset foi carregado na memoria RAM com exito!\n");
+
+    // [ISSUE 23 FASE 2] Criacao da Tabela Hash
+    HashTable* tabela = criar_hash(total_lido);
+
+    if(tabela == NULL){
+        printf("| ERRO CRITICO: Falha ao criar tabela hash.\n");
+        liberar_memoria(lista);
+        return 1;
+    }
+
+    printf("| SUCESSO: Tabela Hash criada com %d buckets.\n", total_lido);
+
+    clock_t final_leitura = clock();
+
     printf("|----------------------------------------------------------------------------------------------|\n");
 
     // ==========================================
