@@ -6,57 +6,78 @@
 
 int main(){
     int total_lido = 0;
-  printf("\n|----------------------------------------------------------------------------------------------|\n");
+    
+    printf("\n|----------------------------------------------------------------------------------------------|\n");
     printf("|-----------------------------IMPLEMENTACAO DE TESTES DE BUSCA---------------------------------|\n");
     printf("|----------------------------------------------------------------------------------------------|\n");
 
-  clock_t tempo_inicial = clock(); //Inicio do Clock
-  clock_t inicio_leitura = clock(); //Inicio do Clock
+    clock_t tempo_inicial = clock(); // Inicio do Clock Geral
 
-  Produto* lista  = ler_arquivo_csv("../dataset3.csv", &total_lido);
-  clock_t final_leitura = clock();
+    // ==========================================
+    // FASE 1: LEITURA DO DATASET
+    // ==========================================
+    printf("\n|---------------------------------------FASE DE CARREGAMENTO-----------------------------------|\n");
+    clock_t inicio_leitura = clock(); 
+    Produto* lista  = ler_arquivo_csv("../dataset3.csv", &total_lido);
+    clock_t final_leitura = clock();
 
-  printf("\n\n|---------------------------------------FASE DE LISTAGEM---------------------------------------|\n");
-  if(lista != NULL){
-    printf("| Produtos carregados com sucesso!\n ");
-  } else { 
-    printf("Erro ao carregar Produtos! \n");
+    // [ISSUE 3] TRAVA DE SEGURANÇA: Se falhar a leitura, aborta para não travar o SO
+    if(lista == NULL){
+        printf("| ERRO CRITICO: Falha ao carregar Produtos! Encerrando sistema...\n");
+        printf("|----------------------------------------------------------------------------------------------|\n");
+        return 1; 
+    } else { 
+        printf("| SUCESSO: O Dataset foi carregado na memoria RAM com exito!\n");
+    }
+    printf("|----------------------------------------------------------------------------------------------|\n");
+
+    // ==========================================
+    // FASE 2: BUSCA MANUAL
+    // ==========================================
+    printf("\n|---------------------------------------FASE DE BUSCA ISOLADA----------------------------------|\n");
+    int id_buscado = 0;
+    printf("| Selecione o ID a ser buscado: ");
+    scanf("%d", &id_buscado);
+
+    clock_t inicio_busca = clock();
+    int consulta = buscar_por_id(lista, total_lido, id_buscado);
+    clock_t final_busca = clock();
+
+    if(consulta != -1){
+        printf("| SUCESSO: O produto foi encontrado! \n");
+        printf("| ID: %i | PRODUTO: %-15s | CATEGORIA: %-15s | VALOR: %.2f \n", 
+               lista[consulta].id, lista[consulta].nome, lista[consulta].categoria, lista[consulta].valor);      
+    } else {
+        printf("| ERRO: Produto nao encontrado no banco de dados! \n");
+    }
+    printf("|----------------------------------------------------------------------------------------------|\n");
+
+    // ==========================================
+    // FASE 3: PROTOCOLO EXPERIMENTAL (BENCHMARK)
+    // ==========================================
+    printf("\n|---------------------------------------FASE DE ESTRESSE---------------------------------------|\n");
+    exec_teste(lista, total_lido);
+
+    // ==========================================
+    // FASE 4: ENCERRAMENTO E LIMPEZA
+    // ==========================================
+    printf("\n|---------------------------------------LIMPEZA DE MEMORIA-------------------------------------|\n");
     liberar_memoria(lista);
-   }
-  printf("|---------------------------------------------------------------------------------------------|\n");
 
-  printf("\n\n|---------------------------------------FASE DE BUSCA------------------------------------------|\n");
-   int id_buscado = 0;
-   printf("| Selcione o id a ser buscado: \n");
-   scanf("%d", &id_buscado);
+    clock_t tempo_final = clock(); // Fim do Clock Geral
 
-   clock_t inicio_busca = clock();
-   int consulta = buscar_por_id(lista, total_lido, id_buscado);
-   clock_t final_busca = clock();
-
-   if(consulta != -1){
-    printf("| SUCESSO: O produto foi encontrado! \n");
-    printf("| ID: %i | PRODUTO: %s | CATEGORIA: %s | VALOR: %.2f \n", 
-      lista[consulta].id,lista[consulta].nome, lista[consulta].categoria, lista[consulta].valor);      
-  }else{printf("| ERRO: Produto nao encontrado! \n");}
-  printf("|----------------------------------------------------------------------------------------------|\n");
-
-  printf("\n\n|---------------------------------------FASE DE TESTE------------------------------------------|\n");
-  exec_teste(lista, total_lido);
-
-  liberar_memoria(lista);
-  printf("|---------------------------------------------------------------------------------------------------|\n");
-
-  clock_t tempo_final = clock(); //Fim do Clock
-
-  //Calculo de Tempo
-  double duracao_geral = (double) (tempo_final - tempo_inicial) / CLOCKS_PER_SEC;
-  double duracao_leitura = (double) (final_leitura - inicio_leitura) / CLOCKS_PER_SEC;
-  double duracao_busca = (double) (final_busca - inicio_busca) / CLOCKS_PER_SEC;
-  printf("\n|-------------------------------------------ANALISE FINAL------------------------------------------|\n");
-  printf("| O tempo de execucao do inicio ao fim do programa foi de: %.3f seg\n", duracao_geral);
-  printf("| O tempo de execucao da leitura do arquivo foi de: %.5f seg\n", duracao_leitura);
-  printf("| O tempo de execucao da busca isolada foi de: %.5f seg\n", duracao_busca);
-  printf("\n|--------------------------------------------------------------------------------------------------|\n");
-  return 0;
+    // ==========================================
+    // FASE 5: RELATORIO DE DESEMPENHO [ISSUE 3] Formatação alinhada
+    // ==========================================
+    double duracao_geral = (double) (tempo_final - tempo_inicial) / CLOCKS_PER_SEC;
+    double duracao_leitura = (double) (final_leitura - inicio_leitura) / CLOCKS_PER_SEC;
+    double duracao_busca = (double) (final_busca - inicio_busca) / CLOCKS_PER_SEC;
+    
+    printf("\n|-------------------------------------------ANALISE FINAL--------------------------------------|\n");
+    printf("| Tempo total de execucao do sistema:           %.3f seg\n", duracao_geral);
+    printf("| Tempo de alocacao e leitura do CSV:           %.5f seg\n", duracao_leitura);
+    printf("| Tempo da busca manual isolada (1 iteracao):   %.6f seg\n", duracao_busca); 
+    printf("|----------------------------------------------------------------------------------------------|\n\n");
+    
+    return 0;
 }
