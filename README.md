@@ -1,4 +1,4 @@
-# Projeto Integrador: Sistema de Consultas (Fase I)
+# Projeto Integrador: Sistema de Consultas
 
 * [O que é este projeto?](#o-que-é-este-projeto)
 * [Como executar?](#como-executar)
