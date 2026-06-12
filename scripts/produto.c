@@ -229,3 +229,12 @@ HashTable* criar_hash(int tamanho){
 
     return tabela;
 }
+
+// Função Hash 
+int funcao_hash(int id, int tamanho_tabela){
+
+    int bloco_esquerda = id / 1000;
+    int bloco_direita = id % 1000;
+
+    return (bloco_esquerda + bloco_direita) % tamanho_tabela;
+}

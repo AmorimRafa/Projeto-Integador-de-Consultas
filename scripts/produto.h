@@ -41,4 +41,7 @@ void exec_teste(Produto* vetor_dinamico, int total_lido);
 HashTable* criar_hash(int tamanho);
 void inicializar_hash(HashTable* tabela);
 
+// Função sorteada
+int funcao_hash(int id, int tamanho_tabela); 
+
 #endif
