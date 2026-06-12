@@ -3,7 +3,6 @@
 #include <string.h>
 #include <time.h>
 #include "produto.h"
-#include "hash.h"
 
 int main(){
     int total_lido = 0;

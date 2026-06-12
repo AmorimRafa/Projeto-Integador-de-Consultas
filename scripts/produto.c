@@ -129,6 +129,7 @@ void exec_teste(Produto* vetor_dinamico, int total_lido){
     int id_fim = vetor_dinamico[total_lido - 1].id;
     int id_inexistente = -99999;
 
+
     printf("\n|--- INICIANDO PROTOCOLO EXPERIMENTAL ---|\n");
 
     for(int repeticao = 1; repeticao <= 3; repeticao++){
@@ -186,4 +187,45 @@ void exec_teste(Produto* vetor_dinamico, int total_lido){
         printf("|---Media do Ciclo----|       O tempo medio do ciclo %d foi de %.6f seg         |\n", repeticao, media_ciclo);
         printf("|-----------------------------------------------------------------------------------------|\n");
     }
+}
+
+// ====================================
+// Inicialização da Tabela Hash
+// ====================================
+
+void inicializar_hash(HashTable* tabela){
+
+    for(int i = 0; i < tabela->tamanho; i++){
+        tabela->buckets[i] = NULL;
+    }
+}
+
+// ====================================
+// Criação da Tabela Hash
+// ====================================
+
+HashTable* criar_hash(int tamanho){
+
+    HashTable* tabela = (HashTable*) malloc(sizeof(HashTable));
+
+    if(tabela == NULL){
+        printf("ERRO: Falha ao criar estrutura Hash.\n");
+        return NULL;
+    }
+
+    tabela->tamanho = tamanho;
+
+    tabela->buckets = (No**) malloc(tamanho * sizeof(No*));
+
+    if(tabela->buckets == NULL){
+        printf("ERRO: Falha ao alocar buckets.\n");
+        free(tabela);
+        return NULL;
+    }
+
+    inicializar_hash(tabela);
+
+    printf("| SUCESSO: Hash criada com %d buckets. |\n", tamanho);
+
+    return tabela;
 }
