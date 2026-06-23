@@ -42,6 +42,19 @@ int main(){
 
     printf("| SUCESSO: Tabela Hash criada com %d buckets.\n", total_lido);
 
+    // ==========================================
+    // [ISSUE #24] Povoando a Tabela Hash
+    // ==========================================
+    printf("\n|---------------------------------------POVOANDO TABELA HASH-----------------------------------|\n");
+    int total_colisoes = 0;
+    
+    for(int i = 0; i < total_lido; i++){
+        inserir_hash(tabela, &lista[i], &total_colisoes);
+    }
+    
+    printf("| SUCESSO: Todos os %d registros foram mapeados para a Hash!\n", total_lido);
+    printf("| AUDITORIA: Total de colisoes registradas pelo algoritmo: %d\n", total_colisoes);
+    
     clock_t final_leitura = clock();
 
     printf("|----------------------------------------------------------------------------------------------|\n");
