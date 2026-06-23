@@ -256,6 +256,23 @@ void inserir_hash(HashTable* tabela, Produto* produto, int* contador_colisoes){
 }
 
 
+void liberar_hash(HashTable* tabela){
+    if(tabela == NULL) return;
+
+    for(int i = 0; i < tabela->tamanho; i++){
+        No* atual = tabela->buckets[i];
+        while(atual != NULL){
+            No* temp = atual;
+            atual = atual->prox;
+            free(temp); 
+        }
+    }
+    free(tabela->buckets); 
+    free(tabela);          
+    
+    printf("| SUCESSO: Memoria da Tabela Hash liberada com exito!\n");
+}
+
 // busca na tabela
 
 Produto* buscar_hash_id(HashTable* tabela, int id_buscado){
@@ -272,3 +289,66 @@ Produto* buscar_hash_id(HashTable* tabela, int id_buscado){
     }
     
     return NULL; 
+}
+    
+// testes massivos Hash
+
+void exec_teste_hash(HashTable* tabela, Produto* vetor_dinamico, int total_lido){
+    int id_inicio = vetor_dinamico[0].id; 
+    int id_meio = vetor_dinamico[total_lido / 2].id;
+    int id_fim = vetor_dinamico[total_lido - 1].id;
+    int id_inexistente = -99999;
+
+    printf("\n|--- INICIANDO PROTOCOLO EXPERIMENTAL HASH ---|\n");
+
+    for(int repeticao = 1; repeticao <= 3; repeticao++){
+        printf("\n| Executando Ciclo numero %d/3 na Tabela Hash... \n", repeticao);
+
+        // --- TESTE INICIO ---
+        clock_t inicio_t = clock(); 
+        for(int i = 0; i < 1000; i++){
+            buscar_hash_id(tabela, id_inicio);
+        }
+        clock_t fim_t = clock(); 
+        double teste_inicio = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
+        gravar_logs("../logs/logs_hash.csv", "Hash Inicio", repeticao, 1000, teste_inicio);
+
+        // --- TESTE MEIO ---
+        inicio_t = clock();
+        for(int i = 0; i < 1000; i++){
+            buscar_hash_id(tabela, id_meio);
+        }
+        fim_t = clock();
+        double teste_meio = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
+        gravar_logs("../logs/logs_hash.csv", "Hash Meio", repeticao, 1000, teste_meio);
+
+        // --- TESTE FIM ---
+        inicio_t = clock();
+        for(int i = 0; i < 1000; i++){
+            buscar_hash_id(tabela, id_fim);
+        }
+        fim_t = clock();
+        double teste_fim = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
+        gravar_logs("../logs/logs_hash.csv", "Hash Fim", repeticao, 1000, teste_fim);
+
+        // --- TESTE INEXISTENTE ---
+        inicio_t = clock();
+        for(int i = 0; i < 1000; i++){
+            buscar_hash_id(tabela, id_inexistente);
+        }
+        fim_t = clock();
+        double teste_inexistente = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
+        gravar_logs("../logs/logs_hash.csv", "Hash Inexistente", repeticao, 1000, teste_inexistente);
+
+        double media_ciclo = (teste_inicio + teste_meio + teste_fim + teste_inexistente) / 4;
+        
+        printf("|-----------------------------------------------------------------------------------------|\n");
+        printf("|----Hash Inicio------| O programa levou %.6f seg para realizar 1000 buscas |\n", teste_inicio);
+        printf("|-----Hash Meio-------| O programa levou %.6f seg para realizar 1000 buscas |\n", teste_meio);
+        printf("|-----Hash Fim--------| O programa levou %.6f seg para realizar 1000 buscas |\n", teste_fim);
+        printf("|--Hash Inexistente---| O programa levou %.6f seg para realizar 1000 buscas |\n", teste_inexistente);
+        printf("|-----------------------------------------------------------------------------------------|\n");
+        printf("|---Media do Ciclo----|       O tempo medio do ciclo %d foi de %.6f seg         |\n", repeticao, media_ciclo);
+        printf("|-----------------------------------------------------------------------------------------|\n");
+    }
+}

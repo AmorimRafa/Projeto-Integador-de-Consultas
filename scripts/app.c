@@ -6,6 +6,7 @@
 
 int main(){
     int total_lido = 0;
+    int total_colisoes = 0;
     
     printf("\n|----------------------------------------------------------------------------------------------|\n");
     printf("|-----------------------------IMPLEMENTACAO DE TESTES DE BUSCA---------------------------------|\n");
@@ -44,7 +45,6 @@ int main(){
 
    
     printf("\n|---------------------------------------POPULANDO TABELA HASH-----------------------------------|\n");
-    int total_colisoes = 0;
     
     for(int i = 0; i < total_lido; i++){
         inserir_hash(tabela, &lista[i], &total_colisoes);
@@ -77,10 +77,16 @@ int main(){
 
    
     printf("\n|---------------------------------------FASE DE ESTRESSE---------------------------------------|\n");
+    
+    printf("\n|---> INICIANDO TESTES: BUSCA SEQUENCIAL (FASE I) <---|\n");
     exec_teste(lista, total_lido);
+
+    printf("\n|---> INICIANDO TESTES: TABELA HASH (FASE II) <---|\n");
+    exec_teste_hash(tabela, lista, total_lido);
 
     printf("\n|---------------------------------------LIMPEZA DE MEMORIA-------------------------------------|\n");
     liberar_memoria(lista);
+    liberar_hash(tabela);
 
     clock_t tempo_final = clock(); 
 
@@ -90,10 +96,16 @@ int main(){
     double duracao_busca = (double) (final_busca - inicio_busca) / CLOCKS_PER_SEC;
     
     printf("\n|-------------------------------------------ANALISE FINAL--------------------------------------|\n");
+    printf("| [METRICAS DE ESTRUTURA] \n");
+    printf("| Total de registros carregados na memoria:     %d registros\n", total_lido);
+    printf("| Total de colisoes na Tabela Hash:             %d colisoes\n", total_colisoes);
+    printf("|\n");
+    printf("| [TEMPOS DE EXECUCAO]\n");
     printf("| Tempo total de execucao do sistema:           %.3f seg\n", duracao_geral);
-    printf("| Tempo de alocacao e leitura do CSV:           %.5f seg\n", duracao_leitura);
+    printf("| Tempo de carga (Leitura CSV + Hash):          %.5f seg\n", duracao_leitura);
     printf("| Tempo da busca manual isolada (1 iteracao):   %.6f seg\n", duracao_busca); 
     printf("|----------------------------------------------------------------------------------------------|\n\n");
-    
+
+
     return 0;
 }
