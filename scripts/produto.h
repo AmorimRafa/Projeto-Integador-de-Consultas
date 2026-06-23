@@ -42,10 +42,13 @@ void inicializar_hash(HashTable* tabela);
 // funcao sorteada
 int funcao_hash(int id, int tamanho_tabela); 
 
-// contador de colisoes
+// insercao e contador de colisoes
 void inserir_hash(HashTable* tabela, Produto* produto, int* contador_colisoes);
 
 // busca na tabela
 Produto* buscar_hash_id(HashTable* tabela, int id_buscado);
 
+
+// assinatura da funcao de teste em massa
+void exec_teste_hash(HashTable* tabela, Produto* vetor_dinamico, int total_lido);
 #endif

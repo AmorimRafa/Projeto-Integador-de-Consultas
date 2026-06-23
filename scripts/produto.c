@@ -121,8 +121,8 @@ void gravar_logs(const char* cenario, int repeticao, int buscas, double tempo_ga
 // Teste de Buscas
 
 void exec_teste(Produto* vetor_dinamico, int total_lido){
-    // [ISSUE 2] CORREÇÃO DO BUG CRÍTICO DO VETOR
-    int id_inicio = vetor_dinamico[0].id; // O ID real da primeira posição!
+    
+    int id_inicio = vetor_dinamico[0].id; 
     int id_meio = vetor_dinamico[total_lido / 2].id;
     int id_fim = vetor_dinamico[total_lido - 1].id;
     int id_inexistente = -99999;
@@ -173,7 +173,7 @@ void exec_teste(Produto* vetor_dinamico, int total_lido){
         double teste_inexistente = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
         gravar_logs("Busca Inexistente", repeticao, 1000, teste_inexistente);
 
-        // --- EXIBICAO DE RESULTADOS ---
+    
         double media_ciclo = (teste_inicio + teste_meio + teste_fim + teste_inexistente) / 4;
         
         printf("|-----------------------------------------------------------------------------------------|\n");
@@ -243,21 +243,21 @@ int funcao_hash(int id, int tamanho_tabela){
 void inserir_hash(HashTable* tabela, Produto* produto, int* contador_colisoes){
     int indice = funcao_hash(produto->id, tabela->tamanho);
 
-    No* novo_no = (No*) malloc(sizeof(No));
-    novo_no->chave = produto->id;
-    novo_no->produto = produto; 
-    novo_no->prox = NULL;
+    No* no = (No*) malloc(sizeof(No));
+    no->chave = produto->id;
+    no->produto = produto; 
+    no->prox = NULL;
 
     if(tabela->buckets[indice] == NULL){
         
-        tabela->buckets[indice] = novo_no;
+        tabela->buckets[indice] = no;
     } else {
         
         (*contador_colisoes)++;
         
         
-        novo_no->prox = tabela->buckets[indice]; //insere no inicio
-        tabela->buckets[indice] = novo_no;
+        no->prox = tabela->buckets[indice]; //insere no inicio
+        tabela->buckets[indice] = no;
     }
 }
 
