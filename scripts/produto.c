@@ -108,27 +108,25 @@ int buscar_categoria(Produto* vetor_dinamico, int total_produtos, const char* ca
 
 // Registro de Logs
 
-void gravar_logs(const char* cenario, int repeticao, int buscas, double tempo_gasto){
-    FILE *arquivo_log = fopen("../logs/logs.csv", "a");
+void gravar_logs(const char* nome_arquivo, const char* cenario, int repeticao, int buscas, double tempo_gasto){
+    FILE *arquivo_log = fopen(nome_arquivo, "a");
     if(arquivo_log == NULL){
-        printf("ERRO: Nao foi possivel abrir o arquivo de logs! \n");
+        printf("ERRO: Nao foi possivel abrir/criar o arquivo de logs em %s! \n", nome_arquivo);
         return;
     }
     fprintf(arquivo_log, "Ciclo %d,%s,%d buscas,%.6f seg\n", repeticao, cenario, buscas, tempo_gasto);
     fclose(arquivo_log);
 }
 
-// Teste de Buscas
+// Teste de Busca sequnencial
 
 void exec_teste(Produto* vetor_dinamico, int total_lido){
-    
     int id_inicio = vetor_dinamico[0].id; 
     int id_meio = vetor_dinamico[total_lido / 2].id;
     int id_fim = vetor_dinamico[total_lido - 1].id;
     int id_inexistente = -99999;
 
-
-    printf("\n|--- INICIANDO PROTOCOLO EXPERIMENTAL ---|\n");
+    printf("\n|--- INICIANDO PROTOCOLO EXPERIMENTAL SEQUENCIAL ---|\n");
 
     for(int repeticao = 1; repeticao <= 3; repeticao++){
         printf("\n| Executando Ciclo numero %d/3... \n", repeticao);
@@ -139,9 +137,8 @@ void exec_teste(Produto* vetor_dinamico, int total_lido){
             buscar_por_id(vetor_dinamico, total_lido, id_inicio);
         }
         clock_t fim_t = clock(); 
-        
         double teste_inicio = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
-        gravar_logs("Busca Inicio", repeticao, 1000, teste_inicio);
+        gravar_logs("../logs/logs_sequencial.csv", "Busca Inicio", repeticao, 1000, teste_inicio);
 
         // --- TESTE MEIO ---
         inicio_t = clock();
@@ -149,9 +146,8 @@ void exec_teste(Produto* vetor_dinamico, int total_lido){
             buscar_por_id(vetor_dinamico, total_lido, id_meio);
         }
         fim_t = clock();
-        
         double teste_meio = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
-        gravar_logs("Busca Meio", repeticao, 1000, teste_meio);
+        gravar_logs("../logs/logs_sequencial.csv", "Busca Meio", repeticao, 1000, teste_meio);
 
         // --- TESTE FIM ---
         inicio_t = clock();
@@ -159,9 +155,8 @@ void exec_teste(Produto* vetor_dinamico, int total_lido){
             buscar_por_id(vetor_dinamico, total_lido, id_fim);
         }
         fim_t = clock();
-        
         double teste_fim = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
-        gravar_logs("Busca Fim", repeticao, 1000, teste_fim);
+        gravar_logs("../logs/logs_sequencial.csv", "Busca Fim", repeticao, 1000, teste_fim);
 
         // --- TESTE INEXISTENTE ---
         inicio_t = clock();
@@ -169,11 +164,10 @@ void exec_teste(Produto* vetor_dinamico, int total_lido){
             buscar_por_id(vetor_dinamico, total_lido, id_inexistente);
         }
         fim_t = clock();
-        
         double teste_inexistente = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
-        gravar_logs("Busca Inexistente", repeticao, 1000, teste_inexistente);
+        gravar_logs("../logs/logs_sequencial.csv", "Busca Inexistente", repeticao, 1000, teste_inexistente);
 
-    
+        // --- EXIBICAO DE RESULTADOS ---
         double media_ciclo = (teste_inicio + teste_meio + teste_fim + teste_inexistente) / 4;
         
         printf("|-----------------------------------------------------------------------------------------|\n");
