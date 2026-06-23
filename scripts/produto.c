@@ -4,9 +4,8 @@
 #include <time.h>
 #include "produto.h"
 
-// ====================================
 // Abertura e Leitura de Arquivo
-// ====================================
+
 Produto* ler_arquivo_csv(const char* nome_arquivo, int* total_lido){
     FILE *arquivo = fopen(nome_arquivo, "r");
 
@@ -79,9 +78,9 @@ void liberar_memoria(Produto* vetor_dinamico){
     }
 }
 
-// ====================================
-// Buscas Sequenciais
-// ====================================
+
+// Busca Sequencial
+
 int buscar_por_id(Produto* vetor_dinamico, int total_produtos, int id_buscado){
     for(int i=0; i<total_produtos;i++){
         if(vetor_dinamico[i].id == id_buscado){
@@ -106,9 +105,9 @@ int buscar_categoria(Produto* vetor_dinamico, int total_produtos, const char* ca
     return categorizados;
 }
 
-// ====================================
-// Registro de Logs [ISSUE 2]
-// ====================================
+
+// Registro de Logs
+
 void gravar_logs(const char* cenario, int repeticao, int buscas, double tempo_gasto){
     FILE *arquivo_log = fopen("../logs/logs.csv", "a");
     if(arquivo_log == NULL){
@@ -119,9 +118,8 @@ void gravar_logs(const char* cenario, int repeticao, int buscas, double tempo_ga
     fclose(arquivo_log);
 }
 
-// ====================================
-// Teste de Buscas [ISSUE 2]
-// ====================================
+// Teste de Buscas
+
 void exec_teste(Produto* vetor_dinamico, int total_lido){
     // [ISSUE 2] CORREÇÃO DO BUG CRÍTICO DO VETOR
     int id_inicio = vetor_dinamico[0].id; // O ID real da primeira posição!
@@ -189,9 +187,9 @@ void exec_teste(Produto* vetor_dinamico, int total_lido){
     }
 }
 
-// ====================================
+
 // Inicialização da Tabela Hash
-// ====================================
+
 
 void inicializar_hash(HashTable* tabela){
 
@@ -200,9 +198,9 @@ void inicializar_hash(HashTable* tabela){
     }
 }
 
-// ====================================
+
 // Criação da Tabela Hash
-// ====================================
+
 
 HashTable* criar_hash(int tamanho){
 
@@ -237,4 +235,28 @@ int funcao_hash(int id, int tamanho_tabela){
     int bloco_direita = id % 1000;
 
     return (bloco_esquerda + bloco_direita) % tamanho_tabela;
+}
+
+
+// contagem de colisoes
+
+void inserir_hash(HashTable* tabela, Produto* produto, int* contador_colisoes){
+    int indice = funcao_hash(produto->id, tabela->tamanho);
+
+    No* novo_no = (No*) malloc(sizeof(No));
+    novo_no->chave = produto->id;
+    novo_no->produto = produto; 
+    novo_no->prox = NULL;
+
+    if(tabela->buckets[indice] == NULL){
+        
+        tabela->buckets[indice] = novo_no;
+    } else {
+        
+        (*contador_colisoes)++;
+        
+        
+        novo_no->prox = tabela->buckets[indice]; //insere no inicio
+        tabela->buckets[indice] = novo_no;
+    }
 }

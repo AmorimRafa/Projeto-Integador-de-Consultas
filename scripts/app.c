@@ -13,16 +13,16 @@ int main(){
 
     clock_t tempo_inicial = clock(); // Inicio do Clock Geral
 
-    // ==============================================
-    // FASE 1: LEITURA DO DATASET E CRIAÇÃO DO HASH
-    // ==============================================
+    
+    // leitura do dataset e criacao da hash
+   
     printf("\n|---------------------------------------FASE DE CARREGAMENTO-----------------------------------|\n");
 
     clock_t inicio_leitura = clock();
 
     Produto* lista = ler_arquivo_csv("../dataset3.csv", &total_lido);
 
-    // [ISSUE 3 FASE 1] TRAVA DE SEGURANÇA: Se falhar a leitura, aborta para não travar o SO
+
     if(lista == NULL){
         printf("| ERRO CRITICO: Falha ao carregar Produtos! Encerrando sistema...\n");
         printf("|----------------------------------------------------------------------------------------------|\n");
@@ -31,7 +31,7 @@ int main(){
 
     printf("| SUCESSO: O Dataset foi carregado na memoria RAM com exito!\n");
 
-    // [ISSUE 23 FASE 2] Criacao da Tabela Hash
+
     HashTable* tabela = criar_hash(total_lido);
 
     if(tabela == NULL){
@@ -46,9 +46,6 @@ int main(){
 
     printf("|----------------------------------------------------------------------------------------------|\n");
 
-    // ==========================================
-    // FASE 2: BUSCA MANUAL
-    // ==========================================
     printf("\n|---------------------------------------FASE DE BUSCA ISOLADA----------------------------------|\n");
     int id_buscado = 0;
     printf("| Selecione o ID a ser buscado: ");
@@ -67,23 +64,16 @@ int main(){
     }
     printf("|----------------------------------------------------------------------------------------------|\n");
 
-    // ==========================================
-    // FASE 3: PROTOCOLO EXPERIMENTAL (BENCHMARK)
-    // ==========================================
+   
     printf("\n|---------------------------------------FASE DE ESTRESSE---------------------------------------|\n");
     exec_teste(lista, total_lido);
 
-    // ==========================================
-    // FASE 4: ENCERRAMENTO E LIMPEZA
-    // ==========================================
     printf("\n|---------------------------------------LIMPEZA DE MEMORIA-------------------------------------|\n");
     liberar_memoria(lista);
 
-    clock_t tempo_final = clock(); // Fim do Clock Geral
+    clock_t tempo_final = clock(); 
 
-    // ==========================================
-    // FASE 5: RELATORIO DE DESEMPENHO [ISSUE 3] Formatação alinhada
-    // ==========================================
+
     double duracao_geral = (double) (tempo_final - tempo_inicial) / CLOCKS_PER_SEC;
     double duracao_leitura = (double) (final_leitura - inicio_leitura) / CLOCKS_PER_SEC;
     double duracao_busca = (double) (final_busca - inicio_busca) / CLOCKS_PER_SEC;
