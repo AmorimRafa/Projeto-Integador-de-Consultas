@@ -45,4 +45,7 @@ int funcao_hash(int id, int tamanho_tabela);
 // contador de colisoes
 void inserir_hash(HashTable* tabela, Produto* produto, int* contador_colisoes);
 
+// busca na tabela
+Produto* buscar_hash_id(HashTable* tabela, int id_buscado);
+
 #endif

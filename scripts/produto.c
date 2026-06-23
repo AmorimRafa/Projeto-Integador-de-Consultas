@@ -260,3 +260,21 @@ void inserir_hash(HashTable* tabela, Produto* produto, int* contador_colisoes){
         tabela->buckets[indice] = novo_no;
     }
 }
+
+
+// busca na tabela
+
+Produto* buscar_hash_id(HashTable* tabela, int id_buscado){
+    int indice = funcao_hash(id_buscado, tabela->tamanho);
+    
+    No* atual = tabela->buckets[indice];
+    
+    // percorre a lista encadeada
+    while(atual != NULL){
+        if(atual->chave == id_buscado){
+            return atual->produto; 
+        }
+        atual = atual->prox;
+    }
+    
+    return NULL; 
