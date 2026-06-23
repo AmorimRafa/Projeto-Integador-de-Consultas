@@ -1,0 +1,12 @@
+Ciclo 1,Busca Inicio,ID 43614,1000 buscas,0.000003 seg
+Ciclo 1,Busca Meio,ID 3341,1000 buscas,0.145029 seg
+Ciclo 1,Busca Fim,ID 189553,1000 buscas,0.411438 seg
+Ciclo 1,Busca Inexistente,ID 9999999,1000 buscas,0.426391 seg
+Ciclo 2,Busca Inicio,ID 43614,1000 buscas,0.000003 seg
+Ciclo 2,Busca Meio,ID 3341,1000 buscas,0.167746 seg
+Ciclo 2,Busca Fim,ID 189553,1000 buscas,0.594846 seg
+Ciclo 2,Busca Inexistente,ID 9999999,1000 buscas,0.435121 seg
+Ciclo 3,Busca Inicio,ID 43614,1000 buscas,0.000004 seg
+Ciclo 3,Busca Meio,ID 3341,1000 buscas,0.144428 seg
+Ciclo 3,Busca Fim,ID 189553,1000 buscas,0.444948 seg
+Ciclo 3,Busca Inexistente,ID 9999999,1000 buscas,0.394698 seg
