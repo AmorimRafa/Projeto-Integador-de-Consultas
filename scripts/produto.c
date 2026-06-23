@@ -4,8 +4,8 @@
 #include <time.h>
 #include "produto.h"
 
-// Abertura e Leitura de Arquivo
 
+// Abertura e Leitura de Arquivo
 Produto* ler_arquivo_csv(const char* nome_arquivo, int* total_lido){
     FILE *arquivo = fopen(nome_arquivo, "r");
 
@@ -21,7 +21,7 @@ Produto* ler_arquivo_csv(const char* nome_arquivo, int* total_lido){
     char linha_temp[1024]; 
 
     while (fgets(linha_temp, sizeof(linha_temp), arquivo) != NULL) {
-        if (strlen(linha_temp) < 2) continue; // Pula linhas vazias
+        if (strlen(linha_temp) < 2) continue; // pula linhas vazias
         total_linhas++;
     }
 
@@ -33,7 +33,7 @@ Produto* ler_arquivo_csv(const char* nome_arquivo, int* total_lido){
     
     Produto* vetor_dinamico = (Produto*) malloc(total_linhas * sizeof(Produto));
     if(vetor_dinamico == NULL){
-        printf("ERRO FATAL: Sem memoria suficiente! \n");
+        printf("ERRO : Sem memoria suficiente! \n");
         *total_lido = 0;
         fclose(arquivo);
         return NULL;
@@ -44,7 +44,7 @@ Produto* ler_arquivo_csv(const char* nome_arquivo, int* total_lido){
 
     int indice = 0;
     while(fgets(linha_temp, sizeof(linha_temp), arquivo) != NULL){
-        if (strlen(linha_temp) < 2) continue; // Protecao
+        if (strlen(linha_temp) < 2) continue; 
         
         linha_temp[strcspn(linha_temp, "\n")] = '\0';
 
@@ -78,9 +78,6 @@ void liberar_memoria(Produto* vetor_dinamico){
     }
 }
 
-
-// Busca Sequencial
-
 int buscar_por_id(Produto* vetor_dinamico, int total_produtos, int id_buscado){
     for(int i=0; i<total_produtos;i++){
         if(vetor_dinamico[i].id == id_buscado){
@@ -105,26 +102,23 @@ int buscar_categoria(Produto* vetor_dinamico, int total_produtos, const char* ca
     return categorizados;
 }
 
-
-// Registro de Logs
-
-void gravar_logs(const char* nome_arquivo, const char* cenario, int repeticao, int buscas, double tempo_gasto){
+// registro de logs
+void gravar_logs(const char* nome_arquivo, const char* cenario, int repeticao, int id_buscado, int buscas, double tempo_gasto){
     FILE *arquivo_log = fopen(nome_arquivo, "a");
     if(arquivo_log == NULL){
         printf("ERRO: Nao foi possivel abrir/criar o arquivo de logs em %s! \n", nome_arquivo);
         return;
     }
-    fprintf(arquivo_log, "Ciclo %d,%s,%d buscas,%.6f seg\n", repeticao, cenario, buscas, tempo_gasto);
+    fprintf(arquivo_log, "Ciclo %d,%s,ID %d,%d buscas,%.6f seg\n", repeticao, cenario, id_buscado, buscas, tempo_gasto);
     fclose(arquivo_log);
 }
 
-// Teste de Busca sequnencial
-
+//rotina de testes 
 void exec_teste(Produto* vetor_dinamico, int total_lido){
     int id_inicio = vetor_dinamico[0].id; 
     int id_meio = vetor_dinamico[total_lido / 2].id;
     int id_fim = vetor_dinamico[total_lido - 1].id;
-    int id_inexistente = -99999;
+    int id_inexistente = 9999999; 
 
     printf("\n|--- INICIANDO PROTOCOLO EXPERIMENTAL SEQUENCIAL ---|\n");
 
@@ -138,7 +132,7 @@ void exec_teste(Produto* vetor_dinamico, int total_lido){
         }
         clock_t fim_t = clock(); 
         double teste_inicio = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
-        gravar_logs("../logs/logs_sequencial.csv", "Busca Inicio", repeticao, 1000, teste_inicio);
+        gravar_logs("../logs/logs_sequencial.csv", "Busca Inicio", repeticao, id_inicio, 1000, teste_inicio);
 
         // --- TESTE MEIO ---
         inicio_t = clock();
@@ -147,7 +141,7 @@ void exec_teste(Produto* vetor_dinamico, int total_lido){
         }
         fim_t = clock();
         double teste_meio = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
-        gravar_logs("../logs/logs_sequencial.csv", "Busca Meio", repeticao, 1000, teste_meio);
+        gravar_logs("../logs/logs_sequencial.csv", "Busca Meio", repeticao, id_meio, 1000, teste_meio);
 
         // --- TESTE FIM ---
         inicio_t = clock();
@@ -156,7 +150,7 @@ void exec_teste(Produto* vetor_dinamico, int total_lido){
         }
         fim_t = clock();
         double teste_fim = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
-        gravar_logs("../logs/logs_sequencial.csv", "Busca Fim", repeticao, 1000, teste_fim);
+        gravar_logs("../logs/logs_sequencial.csv", "Busca Fim", repeticao, id_fim, 1000, teste_fim);
 
         // --- TESTE INEXISTENTE ---
         inicio_t = clock();
@@ -165,7 +159,7 @@ void exec_teste(Produto* vetor_dinamico, int total_lido){
         }
         fim_t = clock();
         double teste_inexistente = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
-        gravar_logs("../logs/logs_sequencial.csv", "Busca Inexistente", repeticao, 1000, teste_inexistente);
+        gravar_logs("../logs/logs_sequencial.csv", "Busca Inexistente", repeticao, id_inexistente, 1000, teste_inexistente);
 
         // --- EXIBICAO DE RESULTADOS ---
         double media_ciclo = (teste_inicio + teste_meio + teste_fim + teste_inexistente) / 4;
@@ -181,23 +175,13 @@ void exec_teste(Produto* vetor_dinamico, int total_lido){
     }
 }
 
-
-// Inicialização da Tabela Hash
-
-
 void inicializar_hash(HashTable* tabela){
-
     for(int i = 0; i < tabela->tamanho; i++){
         tabela->buckets[i] = NULL;
     }
 }
 
-
-// Criação da Tabela Hash
-
-
 HashTable* criar_hash(int tamanho){
-
     HashTable* tabela = (HashTable*) malloc(sizeof(HashTable));
 
     if(tabela == NULL){
@@ -206,7 +190,6 @@ HashTable* criar_hash(int tamanho){
     }
 
     tabela->tamanho = tamanho;
-
     tabela->buckets = (No**) malloc(tamanho * sizeof(No*));
 
     if(tabela->buckets == NULL){
@@ -216,23 +199,21 @@ HashTable* criar_hash(int tamanho){
     }
 
     inicializar_hash(tabela);
-
     printf("| SUCESSO: Hash criada com %d buckets. |\n", tamanho);
 
     return tabela;
 }
 
-// Função Hash 
 int funcao_hash(int id, int tamanho_tabela){
-
-    int bloco_esquerda = id / 1000;
-    int bloco_direita = id % 1000;
+    int id_absoluto = abs(id); // Protecao contra negativos
+    int bloco_esquerda = id_absoluto / 1000;
+    int bloco_direita = id_absoluto % 1000;
 
     return (bloco_esquerda + bloco_direita) % tamanho_tabela;
 }
 
 
-// contagem de colisoes
+// isercao na tabela e colisoes
 
 void inserir_hash(HashTable* tabela, Produto* produto, int* contador_colisoes){
     int indice = funcao_hash(produto->id, tabela->tamanho);
@@ -243,19 +224,15 @@ void inserir_hash(HashTable* tabela, Produto* produto, int* contador_colisoes){
     no->prox = NULL;
 
     if(tabela->buckets[indice] == NULL){
-        
         tabela->buckets[indice] = no;
     } else {
-        
         (*contador_colisoes)++;
-        
-        
-        no->prox = tabela->buckets[indice]; //insere no inicio
+        no->prox = tabela->buckets[indice]; // insere no inicio da lista
         tabela->buckets[indice] = no;
     }
 }
 
-
+//desalocacao
 void liberar_hash(HashTable* tabela){
     if(tabela == NULL) return;
 
@@ -273,15 +250,11 @@ void liberar_hash(HashTable* tabela){
     printf("| SUCESSO: Memoria da Tabela Hash liberada com exito!\n");
 }
 
-// busca na tabela
-
 Produto* buscar_hash_id(HashTable* tabela, int id_buscado){
     int indice = funcao_hash(id_buscado, tabela->tamanho);
-    
     No* atual = tabela->buckets[indice];
     
-    // percorre a lista encadeada
-    while(atual != NULL){
+    while(atual != NULL){ //percorre a lista
         if(atual->chave == id_buscado){
             return atual->produto; 
         }
@@ -291,13 +264,12 @@ Produto* buscar_hash_id(HashTable* tabela, int id_buscado){
     return NULL; 
 }
     
-// testes massivos Hash
-
+//rotina de testes hash
 void exec_teste_hash(HashTable* tabela, Produto* vetor_dinamico, int total_lido){
     int id_inicio = vetor_dinamico[0].id; 
     int id_meio = vetor_dinamico[total_lido / 2].id;
     int id_fim = vetor_dinamico[total_lido - 1].id;
-    int id_inexistente = -99999;
+    int id_inexistente = 9999999; 
 
     printf("\n|--- INICIANDO PROTOCOLO EXPERIMENTAL HASH ---|\n");
 
@@ -311,7 +283,7 @@ void exec_teste_hash(HashTable* tabela, Produto* vetor_dinamico, int total_lido)
         }
         clock_t fim_t = clock(); 
         double teste_inicio = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
-        gravar_logs("../logs/logs_hash.csv", "Hash Inicio", repeticao, 1000, teste_inicio);
+        gravar_logs("../logs/logs_hash.csv", "Hash Inicio", repeticao, id_inicio, 1000, teste_inicio);
 
         // --- TESTE MEIO ---
         inicio_t = clock();
@@ -320,7 +292,7 @@ void exec_teste_hash(HashTable* tabela, Produto* vetor_dinamico, int total_lido)
         }
         fim_t = clock();
         double teste_meio = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
-        gravar_logs("../logs/logs_hash.csv", "Hash Meio", repeticao, 1000, teste_meio);
+        gravar_logs("../logs/logs_hash.csv", "Hash Meio", repeticao, id_meio, 1000, teste_meio);
 
         // --- TESTE FIM ---
         inicio_t = clock();
@@ -329,7 +301,7 @@ void exec_teste_hash(HashTable* tabela, Produto* vetor_dinamico, int total_lido)
         }
         fim_t = clock();
         double teste_fim = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
-        gravar_logs("../logs/logs_hash.csv", "Hash Fim", repeticao, 1000, teste_fim);
+        gravar_logs("../logs/logs_hash.csv", "Hash Fim", repeticao, id_fim, 1000, teste_fim);
 
         // --- TESTE INEXISTENTE ---
         inicio_t = clock();
@@ -338,7 +310,7 @@ void exec_teste_hash(HashTable* tabela, Produto* vetor_dinamico, int total_lido)
         }
         fim_t = clock();
         double teste_inexistente = (double)(fim_t - inicio_t) / CLOCKS_PER_SEC;
-        gravar_logs("../logs/logs_hash.csv", "Hash Inexistente", repeticao, 1000, teste_inexistente);
+        gravar_logs("../logs/logs_hash.csv", "Hash Inexistente", repeticao, id_inexistente, 1000, teste_inexistente);
 
         double media_ciclo = (teste_inicio + teste_meio + teste_fim + teste_inexistente) / 4;
         
