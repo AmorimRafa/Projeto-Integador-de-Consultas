@@ -71,12 +71,13 @@ Clone o repositório para a sua máquina local e aceda à pasta raiz do projeto.
 Inicie o contentor interativo utilizando o serviço compiler configurado no Docker Compose:
 
 Bash
-docker-compose run --rm compiler bash
+## docker compose up -d
+## docker exec --it compiler bash
 Dentro do terminal do contentor, navegue para a pasta de scripts e compile o código:
 
 Bash
-cd scripts
-gcc app.c produto.c -o app
+## cd scripts
+## gcc app.c produto.c -o app
 Execute o binário gerado para iniciar os testes:
 
 Bash
